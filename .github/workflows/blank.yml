@@ -29,7 +29,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: if(${{ inputs.environment == 'development' }}, 'dev', if(${{ inputs.environment == 'staging' }}, 'pre', 'pro'))
+        working-directory: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
