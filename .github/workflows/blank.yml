@@ -31,8 +31,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
+        working-directory: if(${{ matrix.environment == 'development' }}, 'dev', if(${{ matrix.environment == 'staging' }}, 'pre', 'pro'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
