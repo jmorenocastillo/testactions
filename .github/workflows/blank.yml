@@ -42,12 +42,15 @@ jobs:
         run: echo $(ls -l)
 
       - name: Run dev.sh script
+        if: ${{ github.event.inputs.environment == 'dev' }}
         run: bash dev.sh
 
-      # - name: Run pro.sh script
-      #   run: bash pre.sh
+      - name: Run pre.sh script
+        if: ${{ github.event.inputs.environment == 'pre' }}
+        run: bash pre.sh
 
-      # - name: Run pro.sh script
-      #   run: bash pro.sh
+      - name: Run pro.sh script
+        if: ${{ github.event.inputs.environment == 'pro' }}
+        run: bash pro.sh
 
    
