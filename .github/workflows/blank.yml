@@ -42,15 +42,15 @@ jobs:
         run: echo $(ls -l)
 
       - name: Run dev.sh script
-        if: ${{ github.event.inputs.environment == 'dev' }}
+        if: ${{ env.TF_WORKING_DIR == 'dev' }}
         run: bash dev.sh
 
       - name: Run pre.sh script
-        if: ${{ github.event.inputs.environment == 'pre' }}
+        if: ${{ env.TF_WORKING_DIR == 'pre' }}
         run: bash pre.sh
 
       - name: Run pro.sh script
-        if: ${{ github.event.inputs.environment == 'pro' }}
+        if: ${{ env.TF_WORKING_DIR == 'pro' }}
         run: bash pro.sh
 
    
