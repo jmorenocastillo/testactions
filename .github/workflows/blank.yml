@@ -25,7 +25,6 @@ jobs:
     name: 'Terraform CI/CD'
     runs-on: ubuntu-latest
 
-    strategy:
 
 
     defaults:
