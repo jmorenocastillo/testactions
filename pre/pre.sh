@@ -1,2 +1,2 @@
-echo "hello dev"
+echo "hello pre"
 sleep 20
