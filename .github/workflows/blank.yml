@@ -26,12 +26,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      matrix:
-        environment: [development, staging, production]
+
 
     defaults:
       run:
-        working-directory: if(${{ matrix.environment == 'development' }}, 'dev', if(${{ matrix.environment == 'staging' }}, 'pre', 'pro'))
+        working-directory: if(${{ inputs.environment == 'development' }}, 'dev', if(${{ inputs.environment == 'staging' }}, 'pre', 'pro'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -39,7 +38,7 @@ jobs:
       - name: directory
         run: |
           ls -l
-          pwd
+          echo: pwd
       - name: Run pro.sh script
         run: bash pro.sh
 
