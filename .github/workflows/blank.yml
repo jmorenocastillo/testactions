@@ -34,12 +34,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: directory
-      #   run: |
-      #     ls -l
-          
-      - name: List directory contents
-        run: echo $(ls -l)
 
       - name: Run dev.sh script
         if: ${{ env.TF_WORKING_DIR == 'dev' }}
