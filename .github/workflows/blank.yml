@@ -37,27 +37,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Initialize Terraform
-        run: terraform init -backend-config=$GITHUB_WORKSPACE/backend-config/${{ github.event.inputs.environment }}.tfbackend
+      - name: Run pro.sh script
+        run: bash /C:/actiosn/testactions/pro/pro.sh
 
-      - name: Format Terraform code
-        run: terraform fmt -check
 
-      - name: Validate Terraform code
-        run: terraform validate
+      - name: Run pro.sh script
+        run: bash /C:/actiosn/testactions/pre/pre.sh
 
-      - name: Plan Terraform deployment
-        run: terraform plan -var-file=$GITHUB_WORKSPACE/vars/${{ github.event.inputs.environment }}.tfvars
+      - name: Run pro.sh script
+        run: bash /C:/actiosn/testactions/dev/dev.sh
 
-      - name: Apply Terraform deployment
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var-file=$GITHUB_WORKSPACE/vars/${{ github.event.inputs.environment }}.tfvars
-
-      - name: Apply Terraform deployment (Manual Trigger)
-        if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve -var-file=$GITHUB_WORKSPACE/vars/${{ github.event.inputs.environment }}.tfvars
+   
