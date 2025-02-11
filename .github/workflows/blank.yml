@@ -34,12 +34,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: directory
-        run: |
-          ls -l
-          echo: pwd
-      - name: Run pro.sh script
-        run: bash pro.sh
+      # - name: directory
+      #   run: |
+      #     ls -l
+          
+      - name: List directory contents
+        run: echo $(ls -l)
 
 
       - name: Run pro.sh script
