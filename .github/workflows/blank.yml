@@ -36,15 +36,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: directory
+        run: |
+          ls -l
+          pwd
+      - name: Run pro.sh script
+        run: bash pro.sh
+
 
       - name: Run pro.sh script
-        run: bash /C:/actiosn/testactions/pro/pro.sh
-
-
-      - name: Run pro.sh script
-        run: bash /C:/actiosn/testactions/pre/pre.sh
+        run: bash pre.sh
 
       - name: Run pro.sh script
-        run: bash /C:/actiosn/testactions/dev/dev.sh
+        run: bash dev.sh
 
    
