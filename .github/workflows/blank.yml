@@ -21,6 +21,18 @@ env:
   TF_WORKING_DIR: ${{ github.event.inputs.environment == 'development' && 'dev' || github.event.inputs.environment == 'preproduction' && 'pre' || github.event.inputs.environment == 'production' && 'pro' }}
 
 jobs:
+
+  manual_approval:
+      name: 'Manual Approval'
+      runs-on: ubuntu-latest
+      needs: terraform
+      steps:
+        - name: Wait for approval
+          uses: hmarr/auto-approve-action@v2
+          with:
+            github-token: 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
+
+            
   terraform:
     name: 'Terraform CI/CD'
     runs-on: ubuntu-latest
@@ -59,12 +71,4 @@ jobs:
   #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
 
-  provisionProd:
-    name: Provision Prod
-    runs-on: ubuntu-latest
-    environment:
-      name: PRO
-    steps:
-    # Checkout
-    - name: Checkout
-      uses: actions/checkout@v1
+  
