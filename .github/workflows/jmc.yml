@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: trstringer/manual-approval@v1
         with:
-          secret: "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"
+          secret: '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'
           approvers: jmorenocastillo
       - name: Deploy to production
         run: echo deploying
