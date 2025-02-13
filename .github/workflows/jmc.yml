@@ -9,14 +9,24 @@ jobs:
     steps:
       - name: Build
         run: echo building
-  deploy:
-    name: deploy
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: trstringer/manual-approval@v1
+#   deploy:
+#     name: deploy
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#       - uses: trstringer/manual-approval@v1
+#         with:
+#           secret: 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
+#           approvers: jmorenocastillo
+#       - name: Deploy to production
+#         run: echo deploying
+    approval:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+        - name: Approval step
+        id: approval
+        uses: hmarr/auto-approve-action@v2
         with:
-          secret: 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
-
-      - name: Deploy to production
-        run: echo deploying
+            github-token: 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
+        
