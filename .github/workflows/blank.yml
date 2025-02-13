@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -31,8 +34,7 @@ jobs:
           uses: hmarr/auto-approve-action@v2
           with:
             github-token: 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
-            review-message: "Approve to deploy"
-            pull_request_number: ${{ github.event.pull_request.number }}
+
 
             
   terraform:
@@ -71,3 +73,10 @@ jobs:
   #   # secrets:
   #   #   # Can also implicitly pass the secrets with: secrets: inherit
   #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH          
+
+
+
+
+
+
+  
