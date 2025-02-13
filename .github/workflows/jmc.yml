@@ -1,32 +1,27 @@
-name: main
-on:
-  workflow_dispatch:
+# name: Manual Approval Workflow
+
+on: [push]
 
 jobs:
   build:
-    name: build
     runs-on: ubuntu-latest
     steps:
-      - name: Build
-        run: echo building
-#   deploy:
-#     name: deploy
-#     runs-on: ubuntu-latest
-#     needs: build
-#     steps:
-#       - uses: trstringer/manual-approval@v1
-#         with:
-#           secret: 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
-#           approvers: jmorenocastillo
-#       - name: Deploy to production
-#         run: echo deploying
-    approval:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-        - name: Approval step
-        id: approval
-        uses: hmarr/auto-approve-action@v2
-        with:
-            github-token: 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
-        
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run a script
+      run: echo "Running some script"
+
+  approval:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Approval step
+      id: approval
+      uses: hmarr/auto-approve-action@v2
+      with:
+        github-token: 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
+      
+    - name: Wait for approval
+      if: success()
+      run: echo "Waiting for approval"
