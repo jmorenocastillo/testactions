@@ -9,11 +9,6 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      pull-request-number:
-        description: 'Pull request number'
-        required: false
-        default: '1'
-        type: string
       environment:
         description: 'Deployment environment'
         required: true
@@ -29,15 +24,6 @@ env:
   TF_WORKING_DIR: ${{ github.event.inputs.environment == 'development' && 'dev' || github.event.inputs.environment == 'preproduction' && 'pre' || github.event.inputs.environment == 'production' && 'pro' }}
 
 jobs:
-  check_event:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if event is pull_request or pull-request-number is provided
-        run: |
-          if [[ "${{ github.event_name }}" != "pull_request" && -z "${{ github.event.inputs.pull-request-number }}" ]]; then
-            echo "This action must be run using a pull_request event or have an explicit pull-request-number provided."
-            exit 1
-          fi
 
   manual_approval:
       name: 'Manual Approval'
