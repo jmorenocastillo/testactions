@@ -33,7 +33,7 @@ jobs:
         - name: Wait for approval
           uses: hmarr/auto-approve-action@v2
           with:
-            github-token: ${{ github.TOKEN }}
+            github-token: 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
 
 
 
