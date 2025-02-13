@@ -17,6 +17,6 @@ jobs:
       - uses: trstringer/manual-approval@v1
         with:
           secret: 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
-          approvers: trstringer,acdunnigan
+          approvers: jmorenocastillo
       - name: Deploy to production
         run: echo deploying
