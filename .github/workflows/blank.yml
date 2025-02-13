@@ -12,7 +12,7 @@ on:
       pull-request-number:
         description: 'Pull request number'
         required: false
-        default: 'ddd'
+        default: '1'
         type: string
       environment:
         description: 'Deployment environment'
