@@ -32,6 +32,7 @@ jobs:
           with:
             github-token: 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
             review-message: "Approve to deploy"
+            pull_request_number: ${{ github.event.pull_request.number }}
 
             
   terraform:
