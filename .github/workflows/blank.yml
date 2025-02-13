@@ -59,17 +59,12 @@ jobs:
   #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
 
-  manual-approval:
-    needs: terraform
+  provisionProd:
+    name: Provision Prod
     runs-on: ubuntu-latest
+    environment:
+      name: PRO
     steps:
-    - uses: trstringer/manual-approval@v1
-      with:
-        # secret: ${{ github.TOKEN }}
-        # approvers: user1,user2,org-team1
-        # minimum-approvals: 1
-        issue-title: "Deploying v1.3.5 to prod from staging"
-        issue-body: "Please approve or deny the deployment of version v1.3.5."
-        exclude-workflow-initiator-as-approver: false
-        additional-approved-words: ''
-        additional-denied-words: ''
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v1
