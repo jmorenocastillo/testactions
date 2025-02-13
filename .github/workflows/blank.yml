@@ -47,16 +47,16 @@ jobs:
         if: ${{ env.TF_WORKING_DIR == 'pro' }}
         run: bash pro.sh
 
-  reusable:
-    needs: terraform
-      # We do not need to check out the repository to use the reusable workflow
-    uses: ./.github/workflows/reusable-workflow.yml
-    with:
-      reusable_input: "job-2-input"
-      filename: "input.txt"
-    # secrets:
-    #   # Can also implicitly pass the secrets with: secrets: inherit
-    #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
+  # reusable:
+  #   needs: terraform
+  #     # We do not need to check out the repository to use the reusable workflow
+  #   uses: ./.github/workflows/reusable-workflow.yml
+  #   with:
+  #     reusable_input: "job-2-input"
+  #     filename: "input.txt"
+  #   # secrets:
+  #   #   # Can also implicitly pass the secrets with: secrets: inherit
+  #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
 
   manual-approval:
