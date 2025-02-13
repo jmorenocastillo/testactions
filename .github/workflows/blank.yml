@@ -58,12 +58,13 @@ jobs:
   #   #   # Can also implicitly pass the secrets with: secrets: inherit
   #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
-  manual_approval:
-    name: 'Manual Approval'
+
+  provisionProd:
+    name: Provision Prod
     runs-on: ubuntu-latest
-    needs: terraform
+    environment:
+      name: PRO
     steps:
-      - name: 'Approval Step'
-        uses: hmarr/auto-approve-action@v2
-        with:
-          github-token: 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
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v1
