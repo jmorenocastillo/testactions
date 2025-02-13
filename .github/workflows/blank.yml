@@ -31,7 +31,7 @@ jobs:
           uses: hmarr/auto-approve-action@v2
           with:
             github-token: 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
-            issue-number: 1
+            review-message: "Approve to deploy"
 
             
   terraform:
