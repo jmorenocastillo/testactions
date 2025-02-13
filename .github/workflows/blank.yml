@@ -59,12 +59,12 @@ jobs:
   #   #   HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
 
-  provisionProd:
-    name: Provision Prod
+  manual_approval:
+    name: 'Manual Approval'
     runs-on: ubuntu-latest
-    environment:
-      name: PRO
+    needs: terraform
     steps:
-    # Checkout
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Wait for approval
+        uses: hmarr/auto-approve-action@v2
+        with:
+          github-token: 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
