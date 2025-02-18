@@ -25,15 +25,15 @@ env:
 
 jobs:
 
-  manual_approval:
-      name: 'Manual Approval'
-      runs-on: ubuntu-latest
-      needs: terraform
-      steps:
-        - name: Wait for approval
-          uses: hmarr/auto-approve-action@v2
-          with:
-            github-token: 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
+  # manual_approval:
+  #     name: 'Manual Approval'
+  #     runs-on: ubuntu-latest
+  #     needs: terraform
+  #     steps:
+  #       - name: Wait for approval
+  #         uses: hmarr/auto-approve-action@v2
+  #         with:
+  #           github-token: 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
 
 
 
