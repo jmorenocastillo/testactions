@@ -26,7 +26,7 @@ runs:
       id: process-step
       shell: bash # Must explicitly specify the shell for each step. https://github.com/orgs/community/discussions/18597
       run: |
-        echo "reusable_input=${{ inputs.reusable_input }}"
+        echo "aaaaaaaaaaaaaaaaareusable_input=${{ inputs.reusable_input }}"
         echo "HELLO_WORLD_SECRET=${HELLO_WORLD_SECRET}"
         echo "step_output=${{ inputs.reusable_input }}_processed" >> $GITHUB_OUTPUT
     - name: Process file
