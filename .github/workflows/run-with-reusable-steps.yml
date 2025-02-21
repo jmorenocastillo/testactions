@@ -34,7 +34,7 @@ jobs:
           path: input.txt
 
   job-2:
-    needs: job-1
+    
     runs-on: ubuntu-latest
     # Map the job output(s) to step output(s)
     outputs:
@@ -45,10 +45,7 @@ jobs:
         run: |
           pwd
           ls -lrt
-      - uses: actions/download-artifact@v4
-        with:
-          name: input_file
-      - name: Use reusable steps
+
         id: reusable-steps
         uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
         with:
