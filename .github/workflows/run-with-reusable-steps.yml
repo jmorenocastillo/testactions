@@ -13,11 +13,14 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: dev
+        # working-directory: dev
     steps:
      
       - name: Print Hello World
-        run: pwd
+        run: |
+          pwd
+          ls -lrt
+
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
