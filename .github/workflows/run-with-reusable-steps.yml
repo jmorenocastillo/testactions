@@ -19,7 +19,7 @@ jobs:
 
       - name: get job name
         id: get_job_name
-        run: echo "::set-output name=job_name::${{ github.job }}"
+        run: echo "${{ github.job }}"
 
         
 
