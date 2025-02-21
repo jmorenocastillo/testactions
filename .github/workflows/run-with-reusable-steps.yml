@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Print Hello World
         run: echo "Hello World"
-      - name: pwd
-        run: pwd
 
       
 
@@ -38,6 +36,8 @@ jobs:
           
       - name: pwd
         run: pwd
+      - name: ls
+        run: ls
 
       - name: Use reusable steps
         id: reusable-steps
