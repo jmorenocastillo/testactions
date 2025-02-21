@@ -10,9 +10,14 @@ defaults:
 jobs:
   job-1:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: DEV
     steps:
+     
       - name: Print Hello World
-        run: echo "Hello World"
+        run: pwd
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
