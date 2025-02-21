@@ -39,7 +39,7 @@ jobs:
         run: pwd
       - name: ls
         shell: bash
-        run: ls
+        run: dev.sh
 
       - name: Use reusable steps
         id: reusable-steps
