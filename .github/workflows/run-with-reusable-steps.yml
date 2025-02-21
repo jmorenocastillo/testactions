@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Print Hello World
         run: echo "Hello World"
-      - name: Create a file
-        run: echo "Hello World" > input.txt
+      # - name: Create a file
+      #   run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
         with:
           name: input_file
