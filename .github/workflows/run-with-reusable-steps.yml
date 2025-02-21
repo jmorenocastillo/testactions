@@ -13,7 +13,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: DEV
+        working-directory: dev
     steps:
       - name: Print Hello World
         run: echo "Hello World"
@@ -23,7 +23,8 @@ jobs:
         with:
           name: input_file
           path: input.txt
-
+      - name: ls
+        run: ls -l
   job-2:
     needs: job-1
     runs-on: ubuntu-latest
