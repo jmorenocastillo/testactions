@@ -24,8 +24,9 @@ runs:
   steps:
     - uses: actions/checkout@v4
     - name: run pro.sh
-      run: bash pro.sh
-      
+      shell: bash # Must explicitly specify the shell for each step.
+      run:  pro.sh
+
     - name: Process reusable input
       id: process-step
       shell: bash # Must explicitly specify the shell for each step. https://github.com/orgs/community/discussions/18597
