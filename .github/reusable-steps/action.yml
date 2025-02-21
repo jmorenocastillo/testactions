@@ -32,6 +32,7 @@ runs:
     - name: run pro.sh
       shell: bash # Must explicitly specify the shell for each step.
       run:  pro.sh
+      working-directory: pro
 
     - name: Process reusable input
       id: process-step
