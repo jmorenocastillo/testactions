@@ -18,9 +18,6 @@ jobs:
       - name: Print Hello World
         run: echo "Hello World"
 
-        with:
-          name: input_file
-          path: input.txt
       
 
   job-2:
