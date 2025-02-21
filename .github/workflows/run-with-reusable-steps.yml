@@ -10,9 +10,9 @@ defaults:
 jobs:
   pruebanombre:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: dev
+    defaults:
+      run:
+        working-directory: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,7 +21,9 @@ jobs:
         id: get_job_name
         run: echo "${{ github.job }}"
 
-        
+      - name: working directory
+        run: pwd
+
 
 
       - name: Create a file
