@@ -13,7 +13,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: DEV
+        working-directory: dev
     steps:
      
       - name: Print Hello World
