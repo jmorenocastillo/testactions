@@ -18,7 +18,7 @@ outputs:
   reusable_output:
     description: 'Output from the reusable workflow'
     value: ${{ steps.process-step.outputs.step_output }}
-
+working-directory: pro
 runs:
   using: 'composite'
   steps:
