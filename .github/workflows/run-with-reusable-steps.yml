@@ -31,7 +31,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: dev
+        working-directory: pro
     runs-on: ubuntu-latest
     # Map the job output(s) to step output(s)
     outputs:
