@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Print Hello World
         run: echo "Hello World"
+      - name: pwd
+        run: pwd
 
       
 
