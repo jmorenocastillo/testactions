@@ -28,6 +28,7 @@ runs:
       shell: bash # Must explicitly specify the shell for each step.
       run: pwd
     - name: ls  -l
+      working-directory: pro
       shell: bash # Must explicitly specify the shell for each step.
       run: ls -l
     # - name: run pro.sh
