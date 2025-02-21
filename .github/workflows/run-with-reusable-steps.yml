@@ -19,37 +19,36 @@ jobs:
         uses: actions/checkout@v4
       - name: Print Hello World
         run: echo "Hello World"
-      - name: pwd
-        run: pwd
-      - name: run dev.sh
-        run: bash dev.sh
+      # - name: pwd
+      #   run: pwd
+      # - name: run dev.sh
+      #   run: bash dev.sh
 
       
 
-  # job-2:
-  #   needs: job-1
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: dev
-  #   runs-on: ubuntu-latest
-  #   # Map the job output(s) to step output(s)
-  #   outputs:
-  #     job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-          
-  #     - name: pwd
-  #       run: pwd
+  job-2:
+    needs: job-1
+    defaults:
+      run:
+        shell: bash
+        working-directory: dev
+    runs-on: ubuntu-latest
+    # Map the job output(s) to step output(s)
+    outputs:
+      job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Use reusable steps
-  #       id: reusable-steps
-  #       uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
-  #       with:
-  #         reusable_input: "job-2-input"
-  #         filename: "input.txt"
-  #       env:
-  #         HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
+          
+      - name: pwd
+        run: pwd
+
+      - name: Use reusable steps
+        id: reusable-steps
+        uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
+        with:
+          reusable_input: "job-2-input"
+          filename: "input.txt"
+        env:
+          HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
 
