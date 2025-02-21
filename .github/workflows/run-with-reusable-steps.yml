@@ -35,8 +35,10 @@ jobs:
 
           
       - name: pwd
+        shell: bash
         run: pwd
       - name: ls
+        shell: bash
         run: ls
 
       - name: Use reusable steps
