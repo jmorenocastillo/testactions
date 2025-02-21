@@ -13,13 +13,10 @@ jobs:
     defaults:
       run:
         shell: bash
-        # working-directory: dev
+        working-directory: dev
     steps:
      
-      - name: Print Hello World
-        run: |
-          pwd
-          ls -lrt
+
 
       - name: Create a file
         run: echo "Hello World" > input.txt
@@ -36,8 +33,10 @@ jobs:
       job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Print Hello World
+        run: |
+          pwd
+          ls -lrt
       - uses: actions/download-artifact@v4
         with:
           name: input_file
