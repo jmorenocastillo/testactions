@@ -39,10 +39,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-          
-      - name: pwd
-        run: pwd
-
       - name: Use reusable steps
         id: reusable-steps
         uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
