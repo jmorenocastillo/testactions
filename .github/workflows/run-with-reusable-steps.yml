@@ -4,9 +4,11 @@ on:
   workflow_dispatch: # Manually trigger the workflow
     inputs:
       job-1-input:
+        type: boolean
         description: 'Input to job-1'
         required: true
       job-2-input:
+        type: boolean
         description: 'Input to job-2'
         required: true
 
