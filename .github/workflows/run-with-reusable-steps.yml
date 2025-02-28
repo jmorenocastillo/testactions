@@ -19,7 +19,7 @@ defaults:
 jobs:
   job-1:
     runs-on: ubuntu-latest
-    if: github.event.inputs.job-1-input == true
+    if: github.event.inputs['job-1-input'] == 'true'
     defaults:
       run:
         shell: bash
@@ -38,6 +38,7 @@ jobs:
 
   job-2:
     needs: job-1
+    if: github.event.inputs['job-2-input'] == 'true'
     defaults:
       run:
         shell: bash
