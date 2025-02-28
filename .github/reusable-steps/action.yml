@@ -29,10 +29,7 @@ runs:
     - name: ls  -l
       shell: bash # Must explicitly specify the shell for each step.
       run: ls -l
-    - name: run pro.sh
-      shell: bash # Must explicitly specify the shell for each step.
-      run:  bash pro.sh
-      
+
 
     - name: Process reusable input
       id: process-step
