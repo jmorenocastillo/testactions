@@ -2,6 +2,13 @@ name: Run with reusable steps # with composite action
 
 on:
   workflow_dispatch: # Manually trigger the workflow
+    inputs:
+      job-1-input:
+        description: 'Input to job-1'
+        required: true
+      job-2-input:
+        description: 'Input to job-2'
+        required: true
 
 defaults:
   run:
@@ -10,6 +17,7 @@ defaults:
 jobs:
   job-1:
     runs-on: ubuntu-latest
+    if: github.event.inputs.job-1-input == true
     defaults:
       run:
         shell: bash
