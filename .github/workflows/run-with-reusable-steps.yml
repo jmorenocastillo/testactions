@@ -38,7 +38,7 @@ jobs:
 
   job-2:
     needs: job-1
-    if: github.event.inputs['job-1-input'] == 'true' || needs.job-1.result == 'skipped' # Skip this job if job-1 is skipped
+    if: github.event.inputs['job-2-input'] == 'true' || needs.job-1.result == 'skipped' # Skip this job if job-1 is skipped
     defaults:
       run:
         shell: bash
