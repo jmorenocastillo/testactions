@@ -1,64 +1,6 @@
-name: Run with reusable steps # with composite action
-
+name: test
 on:
-  workflow_dispatch: # Manually trigger the workflow
-    inputs:
-      job-1-input:
-        type: boolean
-        description: 'Input to job-1'
-        required: true
-      job-2-input:
-        type: boolean
-        description: 'Input to job-2'
-        required: true
-
-defaults:
-  run:
-    shell: bash
-
-# jobs:
-#   job-1:
-#     runs-on: ubuntu-latest
-#     if: github.event.inputs['job-1-input'] == 'true' 
-#     defaults:
-#       run:
-#         shell: bash
-#         working-directory: 'dev'
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-#       - name: Print Hello World
-#         run: echo "Hello World"
-#       # - name: pwd
-#       #   run: pwd
-#       # - name: run dev.sh
-#       #   run: bash dev.sh
-
-      
-
-#   job-2:
-#     needs: job-1
-#     if: github.event.inputs['job-2-input'] == 'true' || needs.job-1.result == 'skipped' # Skip this job if job-1 is skipped
-#     defaults:
-#       run:
-#         shell: bash
-#         working-directory: pro
-#     runs-on: ubuntu-latest
-#     # Map the job output(s) to step output(s)
-#     outputs:
-#       job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
-#     steps:
-#       - uses: actions/checkout@v4
-
-#       - name: Use reusable steps
-#         id: reusable-steps
-#         uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
-#         with:
-#           reusable_input: "job-2-input"
-#           filename: "input.txt"
-#         env:
-#           HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
-
+  workflow_dispatch:
 jobs:
   a:
     name: a
@@ -83,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - a
-      # - b
-    # if: needs.b.result == 'success' || needs.b.result == 'skipped'
+      - b
+    if: needs.b.result == 'success' || needs.b.result == 'skipped'
     steps:
-      - run: echo "${{ needs.b.result }}"
+      - run: echo "C"
