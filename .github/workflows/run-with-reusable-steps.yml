@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: jmorenocastillo/clonerepo
-          path: prueba
+          # path: prueba
       - name: List files
         run: ls -la
           
