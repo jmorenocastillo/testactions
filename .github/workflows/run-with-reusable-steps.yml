@@ -11,8 +11,7 @@ jobs:
           repository: jmorenocastillo/clonerepo
           path: prueba
       - name: List files
-        run: ls -la prueba
-    
+        run: ls -la
           
   
   
