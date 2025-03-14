@@ -1,5 +1,5 @@
 name: Application One
-# run-name: SDLC for Application One 🚀
+run-name: SDLC for Application One 🚀
 on:
   push:
     branches:
