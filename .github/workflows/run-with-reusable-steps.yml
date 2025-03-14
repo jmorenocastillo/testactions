@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
-  # workflow_dispatch: # Manually trigger the workflow
-  #   inputs:
-  #       VAR1:
-  #         description: 'Variable 1'
-  #         required: false
-  #         default: 'value1'
-  #         type: string
+  workflow_dispatch: # Manually trigger the workflow
+    inputs:
+        VAR1:
+          description: 'Variable 1'
+          required: false
+          default: 'value1'
+          type: string
 defaults:
   run:
     shell: bash
