@@ -38,7 +38,7 @@ jobs:
     steps:
     - name: Reusable steps (AKA composite action)
       id: reusable-steps
-      uses: jmorenocastillo/clonerepo/.github/reusable-steps/action.yml@main
+      uses: jmorenocastillo/clonerepo/.github/reusable-steps/action/action.yml@main
       with:
         run-name: "Static Application Security Testing for Application-One"
         VAR1: ${{ github.event.inputs.VAR1 }}
