@@ -1,53 +1,59 @@
-name: Application One
-run-name: SDLC for Application One 🚀
+name: Run with reusable steps # with composite action
+
 on:
-  push:
-    branches:
-      - main
-  # workflow_dispatch: # Manually trigger the workflow
-  #   inputs:
-  #       VAR1:
-  #         description: 'Variable 1'
-  #         required: false
-  #         default: 'value1'
-  #         type: string
-env:
-      TOKEN: ${{ secrets.TOKEN }}
-      test: "hello" 
+  workflow_dispatch: # Manually trigger the workflow
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  job1:
+  job-1:
     runs-on: ubuntu-latest
-    # Map a step output to a job output
+    steps:
+      - name: Print Hello World
+        run: echo "Hello World"
+      - name: Create a file
+        run: echo "Hello World" > input.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: input_file
+          path: input.txt
+
+  job-2:
+    needs: job-1
+    runs-on: ubuntu-latest
+    # Map the job output(s) to step output(s)
     outputs:
-      output1: ${{ steps.step1.outputs.test }}
-      output2: ${{ steps.step2.outputs.test }}
+      job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
     steps:
-      - id: step1
-        run: echo "test=${{ inputs.VAR1}}" >> "$GITHUB_OUTPUT"
-      - id: step2
-        run: echo "test=world" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: input_file
+      - name: Use reusable steps
+        id: reusable-steps
+        uses:  jmorenocastillo/clonerepo/.github/reusable-steps # To use this syntax, we must have the repository checked out
+        with:
+          OUTPUT1: "job-2-input"
+          OUTPUT2: "input.txt"
+        env:
+          HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
+      - uses: actions/upload-artifact@v4
+        with:
+          name: output_file
+          path: input.txt
 
-  sast:
-    needs: job1
+  job-3:
+    needs: job-2
     runs-on: ubuntu-latest
     steps:
-    - name: Reusable steps (AKA composite action)
-      id: reusable-steps
-      uses: jmorenocastillo/clonerepo/.github/action.yml@main
-      with:
-        run-name: "Static Application Security Testing for Application-One"
-        VAR1: ${{ github.event.inputs.VAR1 }}
-        OUTPUT1: ${{needs.job1.outputs.output1}}
-        OUTPUT2: ${{needs.job1.outputs.output2}}
-
-
-
-
-      
-  
-      #   run-name: "Static Application Security Testing for Application-One"
+      - name: Print output
+        run: echo "reusable_output=${{ needs.job-2.outputs.job_output }}"
+      - uses: actions/download-artifact@v4
+        with:
+          name: output_file
+      - name: Print file content
+        run: cat input.txt
