@@ -26,6 +26,6 @@ jobs:
     uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
     with:
         run-name: "Static Application Security Testing for Application-One"
-        VAR1: "value1"
+        VAR1: ${{ github.event.inputs.VAR1 }}
   
       #   run-name: "Static Application Security Testing for Application-One"
