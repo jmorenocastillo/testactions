@@ -34,8 +34,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: input_file
-      - name: Use reusable steps
-      
+      - name: ls
+        run: |
+            ls -la
+            pwd
+      - name: Use reusable steps      
         id: reusable-steps
         uses: ./.github/reusable-steps/action.yml # To use this syntax, we must have the repository checked out
         with:
