@@ -3,7 +3,9 @@ name: Run with reusable steps # with composite action
 on:
   workflow_dispatch: # Manually trigger the workflow
 
-
+defaults:
+  run:
+    shell: bash
 
 jobs:
   job-1:
