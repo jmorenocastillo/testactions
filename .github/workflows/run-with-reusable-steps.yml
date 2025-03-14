@@ -31,7 +31,7 @@ jobs:
         with:
           repository: jmorenocastillo/clonerepo
           ref: main
-          path: .github/
+
       - name: ls .github
         run: |
             ls .github
