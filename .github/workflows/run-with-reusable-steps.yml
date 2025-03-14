@@ -35,7 +35,7 @@ jobs:
           name: input_file
       - name: Use reusable steps
         id: reusable-steps
-        uses:  jmorenocastillo/clonerepo/.github/reusable-steps@maindd # To use this syntax, we must have the repository checked out
+        uses:  jmorenocastillo/clonerepo/.github/reusable-steps@main # To use this syntax, we must have the repository checked out
         with:
           OUTPUT1: "job-2-input"
           OUTPUT2: "input.txt"
