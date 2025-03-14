@@ -3,9 +3,7 @@ name: Run with reusable steps # with composite action
 on:
   workflow_dispatch: # Manually trigger the workflow
 
-defaults:
-  run:
-    shell: bash
+
 
 jobs:
   job-1:
@@ -35,6 +33,7 @@ jobs:
         with:
           name: input_file
       - name: Use reusable steps
+      
         id: reusable-steps
         uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
         with:
