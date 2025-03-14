@@ -15,9 +15,18 @@ defaults:
   run:
     shell: bash
 jobs:
+  job1:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
+    steps:
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
+      - id: step2
+        run: echo "test=world" >> "$GITHUB_OUTPUT"
   build:
-    env:
-      VAR1: "variable1"
     runs-on: ubuntu-latest
     steps:
       - run: echo "Triggered by ${{ github.actor }} with ${{ github.event_name }} event, status is ${{ job.status }}."
@@ -27,5 +36,9 @@ jobs:
     with:
         run-name: "Static Application Security Testing for Application-One"
         VAR1: ${{ github.event.inputs.VAR1 }}
+        OUTPUT1: ${{needs.job1.outputs.output1}}
+        OUTPUT2: ${{needs.job1.outputs.output2}}
+
+      
   
       #   run-name: "Static Application Security Testing for Application-One"
