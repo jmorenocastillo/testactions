@@ -1,8 +1,18 @@
 name: Application One
 run-name: SDLC for Application One 🚀
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Manually trigger the workflow
+
+defaults:
+  run:
+    shell: bash
 jobs:
   build:
+    env:
+      VAR1: "variable1"
     runs-on: ubuntu-latest
     steps:
       - run: echo "Triggered by ${{ github.actor }} with ${{ github.event_name }} event, status is ${{ job.status }}."
@@ -10,6 +20,7 @@ jobs:
     needs: build
     uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
     with:
-      run-name: "Static Application Security Testing for Application-One"
-    # with:
-    #   run-name: "Static Application Security Testing for Application-One" 
+        run-name: "Static Application Security Testing for Application-One"
+        # VAR1: "value1"
+  
+      #   run-name: "Static Application Security Testing for Application-One"
