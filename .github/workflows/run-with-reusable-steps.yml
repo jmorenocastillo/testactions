@@ -26,12 +26,10 @@ jobs:
         run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - id: step2
         run: echo "test=world" >> "$GITHUB_OUTPUT"
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Triggered by ${{ github.actor }} with ${{ github.event_name }} event, status is ${{ job.status }}."
+
   sast:
-    needs: build
+    needs: job1
+    # runs-on: ubuntu-latest
     uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
     with:
         run-name: "Static Application Security Testing for Application-One"
