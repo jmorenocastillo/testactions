@@ -6,26 +6,13 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  ejecutar-script:
+  call-workflow-passing-data:
     runs-on: ubuntu-latest
     steps:
-      # Checkout del repositorio principal
-      - name: Checkout Repositorio Principal
-        uses: actions/checkout@v4
-
-      # Checkout del repositorio con el script
-      - name: Checkout Repositorio de Scripts
-        uses: actions/checkout@v4
+      - name: Call reusable workflow passing data
+        uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
         with:
-          repository: jmorenocastillo/clonerepo
-          path: prueba
-
-      # Ejecutar el script pasando variables
-      - name: Ejecutar Script Bash
-        env:
           VAR1: "test"
           VAR2: "valor2"
           GITHUB_USER: ${{ github.actor }}
-        run: |
-          chmod +x repo-scripts/scripts/mi-script.sh
-          repo-scripts/scripts/mi-script.sh
+          SCRIPT_PATH: "repo-scripts/scripts/deploy.sh"
