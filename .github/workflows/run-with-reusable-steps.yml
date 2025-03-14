@@ -29,13 +29,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          repository: jmorenocastillo/clonerepo
+          ref: main
+          path: .github/
       - uses: actions/download-artifact@v4
         with:
           name: input_file
       - name: Use reusable steps
         id: reusable-steps
-        uses: jmorenocastillo/clonerepo@main # To use this syntax, we must have the repository checked out
+        uses: .github/ # To use this syntax, we must have the repository checked out
         with:
           reusable_input: "job-2-input"
           filename: "input.txt"
