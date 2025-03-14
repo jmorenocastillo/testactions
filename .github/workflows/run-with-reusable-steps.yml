@@ -35,7 +35,7 @@ jobs:
   sast:
     needs: job1
     # runs-on: ubuntu-latest
-    uses: jmorenocastillo/clonerepo/.github/reusable-steps/action.yml@main
+    uses: jmorenocastillo/clonerepo/.github/workflows/shared/actions.yml@main
     with:
         run-name: "Static Application Security Testing for Application-One"
         VAR1: ${{ github.event.inputs.VAR1 }}
