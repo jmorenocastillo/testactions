@@ -1,11 +1,16 @@
 name: Application One
-run-name: SDLC for Application One 🚀
+# run-name: SDLC for Application One 🚀
 on:
   push:
     branches:
       - main
-  # workflow_dispatch: # Manually trigger the workflow
-
+  workflow_dispatch: # Manually trigger the workflow
+    inputs:
+        VAR1:
+          description: 'Variable 1'
+          required: false
+          default: 'value1'
+          type: string
 defaults:
   run:
     shell: bash
@@ -21,6 +26,6 @@ jobs:
     uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
     with:
         run-name: "Static Application Security Testing for Application-One"
-        # VAR1: "value1"
+        VAR1: "value1"
   
       #   run-name: "Static Application Security Testing for Application-One"
