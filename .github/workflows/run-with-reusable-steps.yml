@@ -9,5 +9,7 @@ jobs:
   sast:
     needs: build
     uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
+    with:
+      run-name: "Static Application Security Testing for Application-One"
     # with:
     #   run-name: "Static Application Security Testing for Application-One" 
