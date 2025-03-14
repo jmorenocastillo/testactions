@@ -29,18 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: jmorenocastillo/clonerepo
-          path: .github/reusable-steps
+          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           name: input_file
-      - name: ls
-        run: |
-            ls -la
-            pwd
-      - name: Use reusable steps      
+      - name: Use reusable steps
         id: reusable-steps
-        uses: ./.github/reusable-steps/action.yml # To use this syntax, we must have the repository checked out
+        uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
         with:
           reusable_input: "job-2-input"
           filename: "input.txt"
@@ -62,7 +57,3 @@ jobs:
           name: output_file
       - name: Print file content
         run: cat input.txt
-
-
-
-
