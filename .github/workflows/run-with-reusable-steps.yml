@@ -32,7 +32,7 @@ jobs:
           repository: jmorenocastillo/clonerepo
           ref: main
 
-      - name: ls .github
+      - name: ls .github/resusable
         run: |
             ls .github
             ls
@@ -42,7 +42,7 @@ jobs:
           name: input_file
       - name: Use reusable steps
         id: reusable-steps
-        uses: ./.github/ # To use this syntax, we must have the repository checked out
+        uses: ./.github/resusable # To use this syntax, we must have the repository checked out
         with:
           reusable_input: "job-2-input"
           filename: "input.txt"
