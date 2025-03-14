@@ -29,7 +29,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          repository: jmorenocastillo/clonerepo
+          path: .github/reusable-steps
       - uses: actions/download-artifact@v4
         with:
           name: input_file
@@ -57,3 +58,7 @@ jobs:
           name: output_file
       - name: Print file content
         run: cat input.txt
+
+
+
+
