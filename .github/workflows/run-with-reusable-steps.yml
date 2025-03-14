@@ -1,18 +1,13 @@
-name: Ejecutar Script Externo
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+name: Application One
+run-name: SDLC for Application One 🚀
+on: [push]
 jobs:
-  call-workflow-passing-data:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Call reusable workflow passing data
-        uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
-        with:
-          VAR1: "test"
-          VAR2: "valor2"
-          GITHUB_USER: ${{ github.actor }}
-          SCRIPT_PATH: "repo-scripts/scripts/deploy.sh"
+      - run: echo "Triggered by ${{ github.actor }} with ${{ github.event_name }} event, status is ${{ job.status }}."
+  sast:
+    needs: build
+    uses: jmorenocastillo/clonerepo/.github/workflows/blank.yml@main
+    # with:
+    #   run-name: "Static Application Security Testing for Application-One" 
