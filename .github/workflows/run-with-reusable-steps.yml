@@ -32,6 +32,11 @@ jobs:
           repository: jmorenocastillo/clonerepo
           ref: main
           path: .github/
+      - name: ls .github
+        run: |
+            ls .github
+            ls
+            pwd
       - uses: actions/download-artifact@v4
         with:
           name: input_file
