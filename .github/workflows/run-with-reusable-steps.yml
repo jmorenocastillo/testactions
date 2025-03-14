@@ -1,22 +1,31 @@
-name: test
+name: Ejecutar Script Externo
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
 jobs:
- clonar_repo:
+  ejecutar-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout tools repo
+      # Checkout del repositorio principal
+      - name: Checkout Repositorio Principal
+        uses: actions/checkout@v4
+
+      # Checkout del repositorio con el script
+      - name: Checkout Repositorio de Scripts
         uses: actions/checkout@v4
         with:
           repository: jmorenocastillo/clonerepo
           path: prueba
-          ref: v1.0.0
-      - name: List files
-        run: | 
-          ls -la
-          pwd
 
-          
-  
-  
-      
+      # Ejecutar el script pasando variables
+      - name: Ejecutar Script Bash
+        env:
+          VAR1: "test"
+          VAR2: "valor2"
+          GITHUB_USER: ${{ github.actor }}
+        run: |
+          chmod +x repo-scripts/scripts/mi-script.sh
+          repo-scripts/scripts/mi-script.sh
