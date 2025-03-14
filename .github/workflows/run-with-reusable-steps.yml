@@ -11,9 +11,13 @@ on:
           required: false
           default: 'value1'
           type: string
+env:
+      TOKEN: ${{ secrets.TOKEN }} 
+
 defaults:
   run:
     shell: bash
+
 jobs:
   job1:
     runs-on: ubuntu-latest
