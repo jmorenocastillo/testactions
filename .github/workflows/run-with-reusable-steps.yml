@@ -29,15 +29,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: jmorenocastillo/clonerepo
-          path: .github/reusable-steps
-
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: input_file
       - name: Use reusable steps
         id: reusable-steps
         uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
         with:
-          OUTPUT1: "job-2-input"
-          OUTPUT2: "input.txt"
+          reusable_input: "job-2-input"
+          filename: "input.txt"
         env:
           HELLO_WORLD_SECRET: TERCES_DLROW_OLLEH
+      - uses: actions/upload-artifact@v4
+        with:
+          name: output_file
+          path: input.txt
 
+  job-3:
+    needs: job-2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print output
+        run: echo "reusable_output=${{ needs.job-2.outputs.job_output }}"
+      - uses: actions/download-artifact@v4
+        with:
+          name: output_file
+      - name: Print file content
+        run: cat input.txt
