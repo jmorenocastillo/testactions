@@ -32,9 +32,9 @@ jobs:
           repository: jmorenocastillo/clonerepo
           ref: main
 
-      - name: ls .github/resusable
+      - name: ls .github/reusable
         run: |
-            ls .github/resusable
+            ls .github/reusable
             ls
             pwd
       - uses: actions/download-artifact@v4
@@ -42,7 +42,7 @@ jobs:
           name: input_file
       - name: Use reusable steps
         id: reusable-steps
-        uses: ./.github/resusable # To use this syntax, we must have the repository checked out
+        uses: ./.github/reusable # To use this syntax, we must have the repository checked out
         with:
           reusable_input: "job-2-input"
           filename: "input.txt"
