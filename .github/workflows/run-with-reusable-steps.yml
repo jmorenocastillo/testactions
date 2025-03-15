@@ -28,15 +28,15 @@ jobs:
       job_output: ${{ steps.reusable-steps.outputs.reusable_output }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: jmorenocastillo/clonerepo
-          ref: main
+      #   with:
+      #     repository: jmorenocastillo/clonerepo
+      #     ref: main
 
-      - name: ls .github/reusable
-        run: |
-            ls .github/reusable
-            ls
-            pwd
+      # - name: ls .github/reusable
+      #   run: |
+      #       ls .github/reusable
+      #       ls
+      #       pwd
       - uses: actions/download-artifact@v4
         with:
           name: input_file
