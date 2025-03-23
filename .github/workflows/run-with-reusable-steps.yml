@@ -6,13 +6,16 @@ on:
 defaults:
   run:
     shell: bash
+env:
+  VARIABLE1: ${{ vars.prueba }}
+
 
 jobs:
   job-1:
     runs-on: ubuntu-latest
     steps:
       - name: Print Hello World
-        run: echo "Hello World"
+        run: echo "Hello World ${{ vars.prueba }}"
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
