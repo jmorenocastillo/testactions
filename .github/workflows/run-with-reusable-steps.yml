@@ -7,7 +7,7 @@ defaults:
   run:
     shell: bash
 env:
-  VARIABLE1: ${{ vars.prueba }}
+  VARIABLE1: ${{ vars.PRUEBA }}
 
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print Hello World
-        run: echo "Hello World ${{ vars.prueba }}"
+        run: echo "Hello World ${{ vars.PRUEBA }}"
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
