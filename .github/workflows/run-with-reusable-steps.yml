@@ -6,18 +6,13 @@ on:
 defaults:
   run:
     shell: bash
-env:
-  VARIABLE1: ${{ vars.PRUEBA2 }}
-
 
 jobs:
   job-1:
     runs-on: ubuntu-latest
     steps:
       - name: Print Hello World
-        run: |
-
-          echo "Hello World ${{ vars.PRUEBA2 }}"
+        run: echo "Hello World"
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
@@ -34,20 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: jmorenocastillo/clonerepo
-          ref: main
-
-      - name: ls .github/reusable
-        run: |
-            ls .github/reusable
-            ls
-            pwd
+          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           name: input_file
       - name: Use reusable steps
         id: reusable-steps
-        uses: jmorenocastillo/clonerepo/.github/reusable@main # To use this syntax, we must have the repository checked out
+        uses: ./.github/reusable-steps # To use this syntax, we must have the repository checked out
         with:
           reusable_input: "job-2-input"
           filename: "input.txt"
