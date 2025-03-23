@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print Hello World
-        run: echo "Hello World"
+        run: echo "Hello World ${{ vars.PRUEBA2}}"
       - name: Create a file
         run: echo "Hello World" > input.txt
       - uses: actions/upload-artifact@v4
