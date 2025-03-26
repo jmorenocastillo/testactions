@@ -14,4 +14,4 @@ jobs:
       client_id: ${{ vars[format('client_id_{0}', inputs.environment)] }}
     steps:
     - run: |
-        echo "$BUILD_SECRETS"
+        echo "$client_id"
