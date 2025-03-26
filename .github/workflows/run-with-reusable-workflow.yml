@@ -12,5 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_SECRETS: ${{ vars[format('{0}_BUILD_SECRETS', inputs.dockerfile)] }}
+      client_id: ${{ vars[format('client_id_{0}', inputs.dockerfile)] }}
     steps:
     - run: echo "$BUILD_SECRETS"
