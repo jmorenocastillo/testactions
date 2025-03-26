@@ -4,14 +4,14 @@ on:
   workflow_dispatch: # Manually trigger the workflow
 
     inputs:
-      dockerfile:
+      environment:
         type: string  
 
 jobs:
   jobid:
     runs-on: ubuntu-latest
     env:
-      BUILD_SECRETS: ${{ vars[format('{0}_BUILD_SECRETS', inputs.dockerfile)] }}
-      client_id: ${{ vars[format('client_id_{0}', inputs.dockerfile)] }}
+      client_id: ${{ vars[format('client_id_{0}', inputs.environment)] }}
     steps:
-    - run: echo "$BUILD_SECRETS"
+    - run: |
+        echo "$BUILD_SECRETS"
