@@ -18,15 +18,7 @@ jobs:
       - name: Discover resources and generate workflow
         id: generate
         run: |
-          # Descubrir recursos
-          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \;)
-          echo "Resources found: $RESOURCES"
-          
-          # Verificar que RESOURCES no esté vacío
-          if [ -z "$RESOURCES" ]; then
-            echo "Error: No resources found"
-            exit 1
-          fi
+
 
           # Crear el YAML dinámico
           mkdir -p .github/workflows
