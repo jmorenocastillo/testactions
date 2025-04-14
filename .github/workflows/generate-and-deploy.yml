@@ -25,7 +25,6 @@ jobs:
           EOF
           echo "File created successfully"
           cat .github/workflows/dynamic-deploy.yml
-
          
 
       - name: Debug generated workflow
