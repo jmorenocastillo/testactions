@@ -20,6 +20,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.git_token }}
+
 
       - name: Discover resources and generate workflow
         id: generate
