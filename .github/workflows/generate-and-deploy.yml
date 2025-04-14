@@ -64,7 +64,7 @@ jobs:
         run: |
           git config user.name "jmorenocastillo"
           git config user.email "c_ompucenter@yahoo.es"
-          git config --global user.password ${{ secrets.GITHUB_TOKEN }}
+          git config --global user.password ${{ secrets.git_token }}
           git add .github/workflows/dynamic-deploy.yml
           git commit -m "Generate dynamic workflow for resources"
           username=$(git config user.name)
