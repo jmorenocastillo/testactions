@@ -24,28 +24,27 @@ jobs:
       - name: Discover resources
         id: set-resources
         run: |
-          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s .)
+          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s . -c)
           echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
 
   deploy-resources:
     needs: discover-resources
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
 
 
       - name: Deploy Terraform for each resource and environment
 
         run: |
           RESOURCES='${{ needs.discover-resources.outputs.resources }}'
+          echo "Resources JSON: $RESOURCES"
           for RESOURCE in $(echo "$RESOURCES" | jq -r '.[]'); do
             for ENV in $ENVIRONMENTS; do
               echo "Deploying $RESOURCE in $ENV..."
               cd "$RESOURCE/$ENV"
+
               cd ../..
             done
           done
