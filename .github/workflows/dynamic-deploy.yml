@@ -21,16 +21,7 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Deploy Terraform for recurso1
-        env:
-          ARM_CLIENT_ID:           ARM_CLIENT_SECRET:           ARM_SUBSCRIPTION_ID:           ARM_TENANT_ID:         run: |
-          for ENV in $ENVIRONMENTS; do
-            echo "Deploying recurso1 in $ENV..."
-            cd "recurso1"/"$ENV"
-            terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT"                           -backend-config="container_name=$CONTAINER_NAME"                           -backend-config="access_key=$AZURE_STORAGE_KEY"                           -backend-config="key=recurso1-$ENV.tfstate"
-            terraform apply -auto-approve
-            cd ../..
-          done
+
   recurso4:
     runs-on: ubuntu-latest
     steps:
@@ -42,16 +33,7 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Deploy Terraform for recurso4
-        env:
-          ARM_CLIENT_ID:           ARM_CLIENT_SECRET:           ARM_SUBSCRIPTION_ID:           ARM_TENANT_ID:         run: |
-          for ENV in $ENVIRONMENTS; do
-            echo "Deploying recurso4 in $ENV..."
-            cd "recurso4"/"$ENV"
-            terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT"                           -backend-config="container_name=$CONTAINER_NAME"                           -backend-config="access_key=$AZURE_STORAGE_KEY"                           -backend-config="key=recurso4-$ENV.tfstate"
-            terraform apply -auto-approve
-            cd ../..
-          done
+
   recurso2:
     runs-on: ubuntu-latest
     steps:
@@ -63,16 +45,7 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Deploy Terraform for recurso2
-        env:
-          ARM_CLIENT_ID:           ARM_CLIENT_SECRET:           ARM_SUBSCRIPTION_ID:           ARM_TENANT_ID:         run: |
-          for ENV in $ENVIRONMENTS; do
-            echo "Deploying recurso2 in $ENV..."
-            cd "recurso2"/"$ENV"
-            terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT"                           -backend-config="container_name=$CONTAINER_NAME"                           -backend-config="access_key=$AZURE_STORAGE_KEY"                           -backend-config="key=recurso2-$ENV.tfstate"
-            terraform apply -auto-approve
-            cd ../..
-          done
+
   recurso3:
     runs-on: ubuntu-latest
     steps:
@@ -84,13 +57,3 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Deploy Terraform for recurso3
-        env:
-          ARM_CLIENT_ID:           ARM_CLIENT_SECRET:           ARM_SUBSCRIPTION_ID:           ARM_TENANT_ID:         run: |
-          for ENV in $ENVIRONMENTS; do
-            echo "Deploying recurso3 in $ENV..."
-            cd "recurso3"/"$ENV"
-            terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT"                           -backend-config="container_name=$CONTAINER_NAME"                           -backend-config="access_key=$AZURE_STORAGE_KEY"                           -backend-config="key=recurso3-$ENV.tfstate"
-            terraform apply -auto-approve
-            cd ../..
-          done
