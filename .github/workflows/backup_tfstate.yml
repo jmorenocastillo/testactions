@@ -24,7 +24,7 @@ jobs:
       - name: Discover resources
         id: set-resources
         run: |
-          RESOURCES=$(ls -d */ | grep -v '^\.' | sed 's#/##g' | jq -R . | jq -s .)
+          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s .)
           echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
 
   deploy-resources:
@@ -42,9 +42,10 @@ jobs:
 
         run: |
           RESOURCES='${{ needs.discover-resources.outputs.resources }}'
-          for RESOURCE in $(echo $RESOURCES | jq -r '.[]'); do
+          for RESOURCE in $(echo "$RESOURCES" | jq -r '.[]'); do
             for ENV in $ENVIRONMENTS; do
               echo "Deploying $RESOURCE in $ENV..."
-              cd $RESOURCE/$ENV
+              cd "$RESOURCE/$ENV"
+              cd ../..
             done
           done
