@@ -5,6 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+env:
+  git_token: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   generate-workflow:
