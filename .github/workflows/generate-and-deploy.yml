@@ -9,7 +9,6 @@ env:
   git_token: ${{ secrets.git_token }}
 permissions:
   contents: write
-  workflows: write
 jobs:
   generate-workflow:
     runs-on: ubuntu-latest
