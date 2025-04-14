@@ -113,7 +113,6 @@ jobs:
           fi
 
       - name: Trigger dynamic workflow
-        if: steps.commit.outputs.changed == 'true'
         uses: actions/github-script@v6
         with:
           script: |
