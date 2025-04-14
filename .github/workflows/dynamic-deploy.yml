@@ -1,13 +1,6 @@
 name: Dynamic Deploy Terraform Resources
-
 on:
-  workflow_call:
-
-env:
-  AZURE_STORAGE_ACCOUNT: " >> .github/workflows/dynamic-deploy.yml
-echo  AZURE_STORAGE_KEY: "
-  CONTAINER_NAME: tfstate
-  ENVIRONMENTS: dev pre pro
+  workflow_dispatch:
 
 jobs:
   recurso1:
@@ -51,10 +44,4 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.5.0
-
 

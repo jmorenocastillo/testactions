@@ -41,7 +41,7 @@ jobs:
           echo "name: Dynamic Deploy Terraform Resources" > .github/workflows/dynamic-deploy.yml
           echo "" >> .github/workflows/dynamic-deploy.yml
           echo "on:" >> .github/workflows/dynamic-deploy.yml
-          echo "  workflow_call:" >> .github/workflows/dynamic-deploy.yml
+          echo " workflow_dispatch:" >> .github/workflows/dynamic-deploy.yml
           echo "" >> .github/workflows/dynamic-deploy.yml
           echo "env:" >> .github/workflows/dynamic-deploy.yml
           echo "  AZURE_STORAGE_ACCOUNT: \${{ secrets.AZURE_STORAGE_ACCOUNT }}" >> .github/workflows/dynamic-deploy.yml
