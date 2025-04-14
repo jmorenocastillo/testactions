@@ -106,3 +106,34 @@ jobs:
               workflow_id: 'dynamic-deploy.yml',
               ref: 'main'
             });
+
+  cleanup-workflow:
+    runs-on: ubuntu-latest
+    needs: generate-workflow
+    if: always()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete dynamic-deploy.yml
+        run: |
+          if [ -f .github/workflows/dynamic-deploy.yml ]; then
+            rm .github/workflows/dynamic-deploy.yml
+            echo "dynamic-deploy.yml deleted"
+          else
+            echo "dynamic-deploy.yml does not exist, nothing to delete"
+          fi
+
+      - name: Commit and push deletion
+        run: |
+          git config user.name "jmorenocastillo"
+          git config user.email "c_ompucenter@yahoo.es"
+          git add .github/workflows/dynamic-deploy.yml || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Remove dynamic-deploy.yml after deployment [skip ci]"
+            git push
+          fi
