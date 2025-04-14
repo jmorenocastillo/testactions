@@ -47,10 +47,8 @@ jobs:
 
           # Añadir un job por cada recurso
           for RESOURCE in $RESOURCES; do
-            # Escapar RESOURCE para evitar caracteres especiales
-            SAFE_RESOURCE=$(printf '%q' "$RESOURCE")
             cat << EOF >> .github/workflows/dynamic-deploy.yml
-            $SAFE_RESOURCE:
+            $RESOURCE:
               runs-on: ubuntu-latest
               steps:
                 - name: Checkout repository
@@ -60,6 +58,24 @@ jobs:
                   uses: hashicorp/setup-terraform@v3
                   with:
                     terraform_version: 1.5.0
+
+                - name: Deploy Terraform for $RESOURCE
+                  env:
+                    ARM_CLIENT_ID: \${{ secrets.ARM_CLIENT_ID }}
+                    ARM_CLIENT_SECRET: \${{ secrets.ARM_CLIENT_SECRET }}
+                    ARM_SUBSCRIPTION_ID: \${{ secrets.ARM_SUBSCRIPTION_ID }}
+                    ARM_TENANT_ID: \${{ secrets.ARM_TENANT_ID }}
+                  run: |
+                    for ENV in \$ENVIRONMENTS; do
+                      echo "Deploying $RESOURCE in \$ENV..."
+                      cd '$RESOURCE'"/\$ENV"
+                      terraform init -backend-config="storage_account_name=\$AZURE_STORAGE_ACCOUNT" \
+                                      -backend-config="container_name=\$CONTAINER_NAME" \
+                                      -backend-config="access_key=\$AZURE_STORAGE_KEY" \
+                                      -backend-config="key=$RESOURCE-\$ENV.tfstate"
+                      terraform apply -auto-approve
+                      cd ../..
+                    done
           EOF
           done
 
