@@ -5,12 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
-env:
-  git_token: ${{ secrets.git_token }}
-permissions:
-  contents: write # We generate static HTML, JS, CSS so we need write access to the repo
-  pages: write
-  id-token: write
+
 jobs:
   generate-workflow:
     runs-on: ubuntu-latest
@@ -25,14 +20,16 @@ jobs:
           RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \;)
           
           # Crear el YAML dinámico
-          cat << 'EOF' > .github/workflows/dynamic-deploy.yml
+          cat << 'EOF' > dynamic-deploy.yml
           name: Dynamic Deploy Terraform Resources
 
           on:
             workflow_call:
 
           env:
-
+            AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+            AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+            CONTAINER_NAME: tfstate
             ENVIRONMENTS: dev pre pro
 
           jobs:
@@ -40,7 +37,7 @@ jobs:
 
           # Añadir un job por cada recurso
           for RESOURCE in $RESOURCES; do
-            cat << EOF >> .github/workflows/dynamic-deploy.yml
+            cat << EOF >> dynamic-deploy.yml
             $RESOURCE:
               runs-on: ubuntu-latest
               steps:
@@ -48,32 +45,41 @@ jobs:
                   uses: actions/checkout@v4
 
 
+
                 - name: Deploy Terraform for $RESOURCE
                   env:
-
+                    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+                    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
                   run: |
                     for ENV in \$ENVIRONMENTS; do
                       echo "Deploying $RESOURCE in \$ENV..."
                       cd "$RESOURCE/\$ENV"
 
+                      cd ../..
                     done
           EOF
           done
+
       - name: Upload generated workflow as artifact
         uses: actions/upload-artifact@v4
         with:
           name: dynamic-workflow
           path: dynamic-deploy.yml
-        # - name: Commit and push generated workflow
-      #   run: |
-      #     git config user.name "jmorenocastillo"
-      #     git config user.email "c_ompucenter@yahoo.es"
-      #     git config --global user.password ${{ secrets.git_token }}
-      #     git add .github/workflows/dynamic-deploy.yml
-      #     git commit -m "Generate dynamic workflow for resources"
-      #     username=$(git config user.name)
-      #     password=secrets.git_token
-          # git push
+
+      - name: Commit and push generated workflow
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add dynamic-deploy.yml
+          # Verificar si hay cambios para evitar commits innecesarios
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Generate dynamic workflow for resources [skip ci]"
+            git push
+          fi
 
       - name: Trigger dynamic workflow
         uses: actions/github-script@v6
