@@ -116,24 +116,32 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
+
+      - name: Debug repository state
+        run: |
+          echo "Listing files in .github/workflows/:"
+          ls -la .github/workflows/ || echo "Directory .github/workflows/ does not exist"
+          if [ -f .github/workflows/dynamic-deploy.yml ]; then
+            echo "dynamic-deploy.yml exists before deletion"
+            cat .github/workflows/dynamic-deploy.yml
+          else
+            echo "dynamic-deploy.yml does not exist before deletion"
+          fi
 
       - name: Delete dynamic-deploy.yml
         run: |
           if [ -f .github/workflows/dynamic-deploy.yml ]; then
             rm .github/workflows/dynamic-deploy.yml
-            echo "dynamic-deploy.yml deleted"
+            echo "dynamic-deploy.yml deleted successfully"
           else
             echo "dynamic-deploy.yml does not exist, nothing to delete"
           fi
 
       - name: Commit and push deletion
         run: |
-          git config user.name "jmorenocastillo"
-          git config user.email "c_ompucenter@yahoo.es"
-          git add .github/workflows/dynamic-deploy.yml || true
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Remove dynamic-deploy.yml after deployment [skip ci]"
-            git push
-          fi
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add .github/workflows/dynamic-deploy.yml
+          git commit -m "Remove dynamic-deploy.yml after deployment [skip ci]" || echo "No changes to commit"
+          git push
