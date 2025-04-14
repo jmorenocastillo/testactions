@@ -60,16 +60,16 @@ jobs:
           EOF
           done
 
-      - name: Commit and push generated workflow
-        run: |
-          git config user.name "jmorenocastillo"
-          git config user.email "c_ompucenter@yahoo.es"
-          git config --global user.password ${{ secrets.git_token }}
-          git add .github/workflows/dynamic-deploy.yml
-          git commit -m "Generate dynamic workflow for resources"
-          username=$(git config user.name)
-          password=secrets.git_token
-          git push
+      # - name: Commit and push generated workflow
+      #   run: |
+      #     git config user.name "jmorenocastillo"
+      #     git config user.email "c_ompucenter@yahoo.es"
+      #     git config --global user.password ${{ secrets.git_token }}
+      #     git add .github/workflows/dynamic-deploy.yml
+      #     git commit -m "Generate dynamic workflow for resources"
+      #     username=$(git config user.name)
+      #     password=secrets.git_token
+          # git push
 
       - name: Trigger dynamic workflow
         uses: actions/github-script@v6
