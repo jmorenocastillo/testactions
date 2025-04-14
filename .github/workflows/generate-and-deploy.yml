@@ -50,7 +50,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Generate dynamic workflow for resources [skip ci]"
-            git push
+
           fi
 
       - name: Trigger dynamic workflow
