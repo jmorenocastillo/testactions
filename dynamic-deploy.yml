@@ -1,0 +1,96 @@
+name: Dynamic Deploy Terraform Resources
+
+on:
+  workflow_call:
+
+env:
+  AZURE_STORAGE_ACCOUNT: 
+  AZURE_STORAGE_KEY: 
+  CONTAINER_NAME: tfstate
+  ENVIRONMENTS: dev pre pro
+
+jobs:
+  recurso1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+
+      - name: Deploy Terraform for recurso1
+        env:
+          ARM_CLIENT_ID: 
+          ARM_CLIENT_SECRET: 
+          ARM_SUBSCRIPTION_ID: 
+          ARM_TENANT_ID: 
+        run: |
+          for ENV in $ENVIRONMENTS; do
+            echo "Deploying recurso1 in $ENV..."
+            cd "recurso1/$ENV"
+
+            cd ../..
+          done
+  recurso4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+
+      - name: Deploy Terraform for recurso4
+        env:
+          ARM_CLIENT_ID: 
+          ARM_CLIENT_SECRET: 
+          ARM_SUBSCRIPTION_ID: 
+          ARM_TENANT_ID: 
+        run: |
+          for ENV in $ENVIRONMENTS; do
+            echo "Deploying recurso4 in $ENV..."
+            cd "recurso4/$ENV"
+
+            cd ../..
+          done
+  recurso2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+
+      - name: Deploy Terraform for recurso2
+        env:
+          ARM_CLIENT_ID: 
+          ARM_CLIENT_SECRET: 
+          ARM_SUBSCRIPTION_ID: 
+          ARM_TENANT_ID: 
+        run: |
+          for ENV in $ENVIRONMENTS; do
+            echo "Deploying recurso2 in $ENV..."
+            cd "recurso2/$ENV"
+
+            cd ../..
+          done
+  recurso3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+
+      - name: Deploy Terraform for recurso3
+        env:
+          ARM_CLIENT_ID: 
+          ARM_CLIENT_SECRET: 
+          ARM_SUBSCRIPTION_ID: 
+          ARM_TENANT_ID: 
+        run: |
+          for ENV in $ENVIRONMENTS; do
+            echo "Deploying recurso3 in $ENV..."
+            cd "recurso3/$ENV"
+
+            cd ../..
+          done
