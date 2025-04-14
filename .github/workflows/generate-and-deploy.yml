@@ -38,17 +38,13 @@ jobs:
           name: dynamic-workflow
           path: .github/workflows/dynamic-deploy.yml
 
-      # - name: Commit and push generated workflow
-      #   run: |
-      #     git config user.name jmorenocastillo"
-      #     git config user.email "c_ompucenter@yahoo.es"
-      #     git config --global user.password ${{ secrets.git_token }}
-      #     git add dynamic-deploy.yml
-      #     password= ${{ secrets.git_token }}
-      #     # Verificar si hay cambios para evitar commits innecesarios
+      - name: Commit and push generated workflow
+        run: |
+          git config user.name jmorenocastillo"
+          git config user.email "c_ompucenter@yahoo.es"
+          git config --global user.password ${{ secrets.git_token }}
+          git add dynamic-deploy.yml
 
-      #     git commit -m "Generate dynamic workflow for resources [skip ci]"
-      #     git push
 
 
       - name: Trigger dynamic workflow
