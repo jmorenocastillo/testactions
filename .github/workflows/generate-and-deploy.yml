@@ -61,6 +61,8 @@ jobs:
           git config user.email "c_ompucenter@yahoo.es"
           git add .github/workflows/dynamic-deploy.yml
           git commit -m "Generate dynamic workflow for resources"
+          username=$(git config user.name)
+          password=secret.git_token
           git push
 
       - name: Trigger dynamic workflow
