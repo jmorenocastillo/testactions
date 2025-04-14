@@ -59,8 +59,12 @@ jobs:
                     done
           EOF
           done
-
-      # - name: Commit and push generated workflow
+      - name: Upload generated workflow as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynamic-workflow
+          path: dynamic-deploy.yml
+        # - name: Commit and push generated workflow
       #   run: |
       #     git config user.name "jmorenocastillo"
       #     git config user.email "c_ompucenter@yahoo.es"
