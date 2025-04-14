@@ -1,0 +1,53 @@
+name: Deploy Terraform Resources
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+  AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+  CONTAINER_NAME: tfstate
+  ENVIRONMENTS: dev pre pro
+
+jobs:
+  discover-resources:
+    runs-on: ubuntu-latest
+    outputs:
+      resources: ${{ steps.set-resources.outputs.resources }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Discover resources
+        id: set-resources
+        run: |
+          RESOURCES=$(ls -d */ | grep -v '^\.' | sed 's#/##g' | jq -R . | jq -s .)
+          echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
+
+  deploy-resources:
+    needs: discover-resources
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
+      - name: Deploy Terraform for each resource and environment
+
+        run: |
+          RESOURCES='${{ needs.discover-resources.outputs.resources }}'
+          for RESOURCE in $(echo $RESOURCES | jq -r '.[]'); do
+            for ENV in $ENVIRONMENTS; do
+              echo "Deploying $RESOURCE in $ENV..."
+              cd $RESOURCE/$ENV
+            done
+          done
