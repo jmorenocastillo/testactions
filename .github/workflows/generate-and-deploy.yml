@@ -44,7 +44,6 @@ jobs:
           git config user.name jmorenocastillo"
           git config user.email "c_ompucenter@yahoo.es"
           git config --global user.password ${{ secrets.git_token }}
-          git add . 
 
 
 
