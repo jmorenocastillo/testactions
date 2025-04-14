@@ -5,7 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+env:
+  git_token: ${{ secrets.git_token }}
 jobs:
   generate-workflow:
     runs-on: ubuntu-latest
@@ -27,9 +28,7 @@ jobs:
             workflow_call:
 
           env:
-            AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-            AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-            CONTAINER_NAME: tfstate
+
             ENVIRONMENTS: dev pre pro
 
           jobs:
@@ -70,9 +69,11 @@ jobs:
 
       - name: Commit and push generated workflow
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
+          git config user.name jmorenocastillo"
+          git config user.email "c_ompucenter@yahoo.es"
+          git config --global user.password ${{ secrets.git_token }}
           git add dynamic-deploy.yml
+          password=${{ env.git_token }}
           # Verificar si hay cambios para evitar commits innecesarios
           if git diff --staged --quiet; then
             echo "No changes to commit"
@@ -91,3 +92,18 @@ jobs:
               workflow_id: 'dynamic-deploy.yml',
               ref: 'main'
             });
+
+
+
+
+
+                    # - name: Commit and push generated workflow
+      #   run: |
+      #     git config user.name "jmorenocastillo"
+      #     git config user.email "c_ompucenter@yahoo.es"
+      #     git config --global user.password ${{ secrets.git_token }}
+      #     git add .github/workflows/dynamic-deploy.yml
+      #     git commit -m "Generate dynamic workflow for resources"
+      #     username=$(git config user.name)
+      #     password=secrets.git_token
+          # git push
