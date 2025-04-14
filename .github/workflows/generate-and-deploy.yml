@@ -7,7 +7,10 @@ on:
   workflow_dispatch:
 env:
   git_token: ${{ secrets.GITHUB_TOKEN }}
-
+permissions:
+  contents: write # We generate static HTML, JS, CSS so we need write access to the repo
+  pages: write
+  id-token: write
 jobs:
   generate-workflow:
     runs-on: ubuntu-latest
