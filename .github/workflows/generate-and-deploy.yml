@@ -46,12 +46,10 @@ jobs:
           git add dynamic-deploy.yml
           password= ${{ secrets.git_token }}
           # Verificar si hay cambios para evitar commits innecesarios
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Generate dynamic workflow for resources [skip ci]"
 
-          fi
+          git commit -m "Generate dynamic workflow for resources [skip ci]"
+          git push
+
 
       - name: Trigger dynamic workflow
         if: steps.commit.outputs.changed == 'true'
