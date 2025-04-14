@@ -80,7 +80,7 @@ jobs:
           git config user.email "c_ompucenter@yahoo.es"
           git config --global user.password ${{ secrets.git_token }}
           git add dynamic-deploy.yml
-          password=${{ env.git_token }}
+          password= ${{ secrets.git_token }}
           # Verificar si hay cambios para evitar commits innecesarios
           if git diff --staged --quiet; then
             echo "No changes to commit"
