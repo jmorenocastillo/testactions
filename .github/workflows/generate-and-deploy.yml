@@ -1,86 +1,47 @@
-name: Dynamic Deploy Terraform Resources
+name: Matriz con salidas
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      resources:
-        description: 'Recursos a ejecutar (separados por comas, ej: recurso1,recurso2; dejar vacío para todos)'
-        required: false
-        default: ''
-
-env:
-  AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-  AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-  CONTAINER_NAME: tfstate
-  ENVIRONMENTS: dev pre pro
-
-permissions:
-  contents: read
-  id-token: write
-  pull-requests: write
-  actions: write
 
 jobs:
-  discover-resources:
+  define-matrix:
     runs-on: ubuntu-latest
     outputs:
-      resources: ${{ steps.set-resources.outputs.resources }}
-      selected_resources: ${{ steps.set-resources.outputs.selected_resources }}
+      colors: ${{ steps.colors.outputs.colors }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Definir colores
+        id: colors
+        run: echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
 
-      - name: List resource directories
-        id: set-resources
-        run: |
-          # Lista las carpetas en el directorio raíz, excluyendo .git y otros ocultos
-          resources=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s -c .)
-          if [ "$resources" = "[]" ]; then
-            echo "Error: No resources found"
-            exit 1
-          fi
-          echo "Found resources: $resources"
-          
-          # Procesar input resources
-          if [[ -n "${{ github.event.inputs.resources }}" ]]; then
-            # Convertir el input en un array JSON, eliminando espacios
-            input_resources=$(echo "${{ github.event.inputs.resources }}" | tr -d ' ' | tr ',' '\n' | jq -R . | jq -s -c .)
-            echo "Input resources: $input_resources"
-            # Verificar que cada recurso del input exista
-            for input_resource in $(echo "$input_resources" | jq -r '.[]'); do
-              if ! echo "$resources" | jq -e '.[] | select(. == "'"$input_resource"'")'; then
-                echo "Error: El recurso '$input_resource' no existe"
-                exit 1
-              fi
-            done
-            selected_resources="$input_resources"
-          else
-            # Si no se proporciona input, usar todos los recursos
-            selected_resources="$resources"
-          fi
-          
-          echo "Selected resources: $selected_resources"
-          echo "resources=$resources" >> $GITHUB_OUTPUT
-          echo "selected_resources=$selected_resources" >> $GITHUB_OUTPUT
-        shell: bash
-
-  deploy-resources:
-    needs: discover-resources
+  produce-artifacts:
+    needs: define-matrix
     runs-on: ubuntu-latest
-    name: Deploy ${{ matrix.resource }}
     strategy:
       matrix:
-        resource: ${{ fromJson(needs.discover-resources.outputs.selected_resources) }}
+        color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Generar artefacto
+        env:
+          color: ${{ matrix.color }}
+        run: echo "$color" > color
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.color }}
+          path: color
 
-
-
-      - name: Run Terraform for resource
-        run: |
-          echo "Ejecutando Terraform para ${{ matrix.resource }}"
-          cd ${{ matrix.resource }}
+  consume-artifacts:
+    needs: produce-artifacts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
+    steps:
+      - name: Descargar artefacto
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.color }}
+      - name: Mostrar contenido
+        run: cat color
