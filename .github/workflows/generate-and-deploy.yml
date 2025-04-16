@@ -1,27 +1,14 @@
-name: Dynamic Resource Jobs
+name: CI
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  discover-resources:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      resources: ${{ steps.set-resources.outputs.resources }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: List resource folders
-        id: set-resources
-        run: |
-          if [ -d "resources" ]; then
-            resources=$(find resources -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s .)
-          else
-            resources="[]"
-          fi
-          echo "resources=$resources" >> $GITHUB_OUTPUT
-
-        
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: echo "Ejecutando pruebas en la rama main"
