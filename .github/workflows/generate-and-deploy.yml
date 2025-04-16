@@ -1,147 +1,49 @@
-name: Generate and Deploy Terraform Resources
+name: Dynamic Resource Jobs
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-env:
-  git_token: ${{ secrets.git_token }}
-permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
-  actions: write
+
 jobs:
-  generate-workflow:
+  discover-resources:
     runs-on: ubuntu-latest
+    outputs:
+      resources: ${{ steps.set-resources.outputs.resources }}
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.git_token }}
 
-
-      - name: Discover resources and generate workflow
-        id: generate
+      - name: List resource folders
+        id: set-resources
         run: |
+          # Escanea las carpetas en resources/ y genera una lista JSON
+          resources=$(ls -d resources/*/ | xargs -n 1 basename | jq -R . | jq -s .)
+          echo "resources=$resources" >> $GITHUB_OUTPUT
 
-          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \;)
-          echo "Resources found: $RESOURCES"
+  process-resources:
+    needs: discover-resources
+    runs-on: ubuntu-latest
+    strategy:
+      # Usamos fail-fast: false para que un fallo en un job no detenga los demás
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          # Verificar que RESOURCES no esté vacío
-          if [ -z "$RESOURCES" ]; then
-            echo "Error: No resources found"
-            exit 1
-          fi
-
-          # Crear el YAML dinámico línea por línea
-          mkdir -p .github/workflows
-          echo "name: Dynamic Deploy Terraform Resources" > .github/workflows/dynamic-deploy.yml
-          echo "" >> .github/workflows/dynamic-deploy.yml
-          echo "on:" >> .github/workflows/dynamic-deploy.yml
-          echo " workflow_dispatch:" >> .github/workflows/dynamic-deploy.yml
-          echo "" >> .github/workflows/dynamic-deploy.yml
-          echo "env:" >> .github/workflows/dynamic-deploy.yml
-          echo "  AZURE_STORAGE_ACCOUNT: \${{ secrets.AZURE_STORAGE_ACCOUNT }}" >> .github/workflows/dynamic-deploy.yml
-          echo "  AZURE_STORAGE_KEY: \${{ secrets.AZURE_STORAGE_KEY }}" >> .github/workflows/dynamic-deploy.yml
-          echo "  CONTAINER_NAME: tfstate" >> .github/workflows/dynamic-deploy.yml
-          echo "  ENVIRONMENTS: dev pre pro" >> .github/workflows/dynamic-deploy.yml
-          echo "" >> .github/workflows/dynamic-deploy.yml
-          echo "jobs:" >> .github/workflows/dynamic-deploy.yml
-
-          # Añadir un job por cada recurso
-          for RESOURCE in $RESOURCES; do
-            echo "Generating job for $RESOURCE"
-            cat << EOF >> .github/workflows/dynamic-deploy.yml
-            $RESOURCE:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Checkout repository
-                  uses: actions/checkout@v4
-
-                - name: Setup Terraform
-                  uses: hashicorp/setup-terraform@v3
-                  with:
-                    terraform_version: 1.5.0
-
-
-          EOF
+      - name: Process resource
+        run: |
+          # Obtener la lista de recursos desde el output del job anterior
+          resources='${{ needs.discover-resources.outputs.resources }}'
+          # Convertir el JSON en una lista y procesar cada recurso
+          for resource in $(echo "$resources" | jq -r '.[]'); do
+            echo "Processing $resource"
+            # Aquí puedes añadir la lógica específica para cada recurso
+            # Por ejemplo, ejecutar un script en la carpeta resources/$resource
+            cd resources/$resource
+            # Ejemplo: ejecutar un script (ajusta según tus necesidades)
+            echo "Running task in $resource"
+            # bash ./script.sh
+            cd ../..
           done
-
-      - name: Debug generated workflow
-        run: |
-          echo "Generated workflow content:"
-          cat .github/workflows/dynamic-deploy.yml || echo "Error: Failed to read dynamic-deploy.yml"
-
-      - name: Upload generated workflow as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dynamic-workflow
-          path: .github/workflows/dynamic-deploy.yml
-
-      - name: Commit and push generated workflow
-        run: |
-          git config user.name "jmorenocastillo"
-          git config user.email "c_ompucenter@yahoo.es"
-          git config --global user.password ${{ secrets.git_token }}
-          git add .
-          password=${{ secrets.git_token }}
-          # Verificar si hay cambios para evitar commits innecesarios
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Generate dynamic workflow for resources [skip ci]"
-            git push
-          fi
-
-      - name: Trigger dynamic workflow
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'dynamic-deploy.yml',
-              ref: 'main'
-            });
-
-  cleanup-workflow:
-    runs-on: ubuntu-latest
-    needs: generate-workflow
-    if: always()
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-
-      - name: Debug repository state
-        run: |
-          echo "Listing files in .github/workflows/:"
-          ls -la .github/workflows/ || echo "Directory .github/workflows/ does not exist"
-          if [ -f .github/workflows/dynamic-deploy.yml ]; then
-            echo "dynamic-deploy.yml exists before deletion"
-            cat .github/workflows/dynamic-deploy.yml
-          else
-            echo "dynamic-deploy.yml does not exist before deletion"
-          fi
-
-      - name: Delete dynamic-deploy.yml
-        run: |
-          if [ -f .github/workflows/dynamic-deploy.yml ]; then
-            rm .github/workflows/dynamic-deploy.yml
-            echo "dynamic-deploy.yml deleted successfully"
-          else
-            echo "dynamic-deploy.yml does not exist, nothing to delete"
-          fi
-
-      - name: Commit and push deletion
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git add .github/workflows/dynamic-deploy.yml
-          git commit -m "Remove dynamic-deploy.yml after deployment [skip ci]" || echo "No changes to commit"
-          git push
