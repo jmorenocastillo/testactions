@@ -1,47 +1,35 @@
-name: Matriz con salidas
+name: Parse Dynamic YAML
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: 'Recurso a procesar (e.g., recurso1)'
+        required: true
 
 jobs:
-  define-matrix:
+  generate-and-run:
     runs-on: ubuntu-latest
-    outputs:
-      colors: ${{ steps.colors.outputs.colors }}
     steps:
-      - name: Definir colores
-        id: colors
-        run: echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
-
-  produce-artifacts:
-    needs: define-matrix
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
-    steps:
-      - name: Generar artefacto
-        env:
-          color: ${{ matrix.color }}
-        run: echo "$color" > color
-      - name: Subir artefacto
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.color }}
-          path: color
-
-  consume-artifacts:
-    needs: produce-artifacts
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
-    steps:
-      - name: Descargar artefacto
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.color }}
-      - name: Mostrar contenido
-        run: cat color
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+      - name: Generate and parse YAML
+        run: |
+          # Generar YAML
+          cat <<EOF > dynamic.yml
+          jobs:
+            process-${{ github.event.inputs.resource }}:
+              steps:
+                - run: echo "Processing ${{ github.event.inputs.resource }}"
+                - run: cd resources/${{ github.event.inputs.resource }} && bash ./deploy.sh
+          EOF
+          # Parsear y ejecutar comandos
+          COMMANDS=$(yq e '.jobs.*.steps[].run' dynamic.yml)
+          while IFS= read -r cmd; do
+            echo "Ejecutando: $cmd"
+            eval "$cmd"
+          done <<< "$COMMANDS"
