@@ -1,14 +1,42 @@
-name: CI
+name: Dynamic Resource Jobs
 
 on:
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: 'Recurso a ejecutar (dejar vacío para ejecutar todos)'
+        required: false
+        default: ''
   push:
     branches:
       - main
 
 jobs:
-  build:
+  discover-resources:
     runs-on: ubuntu-latest
+    outputs:
+      resources: ${{ steps.set-resources.outputs.resources }}
     steps:
       - uses: actions/checkout@v4
-      - name: Run tests
-        run: echo "Ejecutando pruebas en la rama main"
+      - name: List resource directories
+        id: set-resources
+        run: |
+          # Lista las carpetas en el directorio raíz (ajusta la ruta si es necesario)
+          resources=$(ls -d recurso*/ | sed 's/\/$//' | jq -R . | jq -s .)
+          echo "resources=$resources" >> $GITHUB_OUTPUT
+
+  build-resources:
+    needs: discover-resources
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        resource: ${{ fromJson(needs.discover-resources.outputs.resources) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run job for resource
+        # Usa un condicional en el nivel de paso para filtrar
+        if: ${{ github.event.inputs.resource == '' || github.event.inputs.resource == matrix.resource }}
+        run: |
+          echo "Ejecutando job para ${{ matrix.resource }}"
+          # Aquí puedes agregar los comandos específicos para cada recurso
+          # Por ejemplo: cd ${{ matrix.resource }} && ./build.sh
