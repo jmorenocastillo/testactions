@@ -46,26 +46,26 @@ jobs:
           echo "GITHUB_OUTPUT contents:"
           cat $GITHUB_OUTPUT
 
-  process-resources:
-    needs: discover-resources
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        resource: ${{ fromJSON(needs.discover-resources.outputs.resources) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # process-resources:
+  #   needs: discover-resources
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       resource: ${{ fromJSON(needs.discover-resources.outputs.resources) }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Process resource
-        run: |
-          echo "Processing ${{ matrix.resource }}"
-          if [ -d "resources/${{ matrix.resource }}" ]; then
-            cd resources/${{ matrix.resource }}
-            # Add your specific logic here, e.g., run a script
-            echo "Running task for ${{ matrix.resource }}"
-            # bash ./script.sh
-            cd ../..
-          else
-            echo "Error: Directory resources/${{ matrix.resource }} not found"
-            exit 1
-          fi
+  #     - name: Process resource
+  #       run: |
+  #         echo "Processing ${{ matrix.resource }}"
+  #         if [ -d "resources/${{ matrix.resource }}" ]; then
+  #           cd resources/${{ matrix.resource }}
+  #           # Add your specific logic here, e.g., run a script
+  #           echo "Running task for ${{ matrix.resource }}"
+  #           # bash ./script.sh
+  #           cd ../..
+  #         else
+  #           echo "Error: Directory resources/${{ matrix.resource }} not found"
+  #           exit 1
+  #         fi
