@@ -29,7 +29,6 @@ jobs:
           if [ -z "$RESOURCES" ]; then
             echo "Error: No resources found"
             exi
-          echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
 
   build-resources:
     needs: discover-resources
