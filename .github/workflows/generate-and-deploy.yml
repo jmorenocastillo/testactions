@@ -5,7 +5,7 @@ on:
     inputs:
       resource:
         description: 'Recurso a procesar (e.g., recurso1)'
-        required: true
+        required: false
 
 jobs:
   generate-yaml:
