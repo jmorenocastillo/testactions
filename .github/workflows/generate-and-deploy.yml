@@ -6,8 +6,8 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      resource:
-        description: 'Recurso a ejecutar (dejar vacío para ejecutar todos)'
+      resources:
+        description: 'Recursos a ejecutar (separados por comas, ej: recurso1,recurso2; dejar vacío para todos)'
         required: false
         default: ''
 
@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       resources: ${{ steps.set-resources.outputs.resources }}
+      selected_resources: ${{ steps.set-resources.outputs.selected_resources }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,21 +37,34 @@ jobs:
         id: set-resources
         run: |
           # Lista las carpetas en el directorio raíz, excluyendo .git y otros ocultos
-          resources=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s -c .)
+          resources=$(find . -max Inhibition: 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s -c .)
           if [ "$resources" = "[]" ]; then
             echo "Error: No resources found"
             exit 1
           fi
           echo "Found resources: $resources"
-          # Validar input si se proporciona
-          if [[ -n "${{ github.event.inputs.resource }}" ]]; then
-            if ! echo "$resources" | jq -e '.[] | select(. == "${{ github.event.inputs.resource }}")'; then
-              echo "Error: El recurso '${{ github.event.inputs.resource }}' no existe"
-              exit 1
-            fi
+          
+          # Procesar input resources
+          if [[ -n "${{ github.event.inputs.resources }}" ]]; then
+            # Convertir el input en un array JSON, eliminando espacios
+            input_resources=$(echo "${{ github.event.inputs.resources }}" | tr -d ' ' | tr ',' '\n' | jq -R . | jq -s -c .)
+            echo "Input resources: $input_resources"
+            # Verificar que cada recurso del input exista
+            for input_resource in $(echo "$input_resources" | jq -r '.[]'); do
+              if ! echo "$resources" | jq -e '.[] | select(. == "'"$input_resource"'")'; then
+                echo "Error: El recurso '$input_resource' no existe"
+                exit 1
+              fi
+            done
+            selected_resources="$input_resources"
+          else
+            # Si no se proporciona input, usar todos los recursos
+            selected_resources="$resources"
           fi
-          # Escribir la salida en una sola línea
+          
+          echo "Selected resources: $selected_resources"
           echo "resources=$resources" >> $GITHUB_OUTPUT
+          echo "selected_resources=$selected_resources" >> $GITHUB_OUTPUT
         shell: bash
 
   deploy-resources:
@@ -69,10 +83,9 @@ jobs:
           terraform_version: 1.5.0
 
       - name: Run Terraform for resource
-        if: ${{ github.event.inputs.resource == '' || github.event.inputs.resource == matrix.resource }}
+        if: ${{ contains(fromJson(needs.discover-resources.outputs.selected_resources), matrix.resource) }}
         run: |
           echo "Ejecutando Terraform para ${{ matrix.resource }}"
-          # Añade aquí los comandos específicos de Terraform para el recurso
           cd ${{ matrix.resource }}
           terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT" \
                          -backend-config="container_name=$CONTAINER_NAME" \
