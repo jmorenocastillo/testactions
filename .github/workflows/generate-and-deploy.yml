@@ -22,8 +22,14 @@ jobs:
         id: set-resources
         run: |
           # Lista las carpetas en el directorio raíz (ajusta la ruta si es necesario)
-          resources=$(ls -d recurso*/ | sed 's/\/$//' | jq -R . | jq -s .)
-          echo "resources=$resources" >> $GITHUB_OUTPUT
+          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \;)
+          echo "Resources found: $RESOURCES"
+
+          # Verificar que RESOURCES no esté vacío
+          if [ -z "$RESOURCES" ]; then
+            echo "Error: No resources found"
+            exi
+          echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
 
   build-resources:
     needs: discover-resources
