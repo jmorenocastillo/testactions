@@ -18,32 +18,55 @@ jobs:
       - name: List resource folders
         id: set-resources
         run: |
-          # Escanea las carpetas en resources/ y genera una lista JSON
-          resources=$(ls -d resources/*/ | xargs -n 1 basename | jq -R . | jq -s .)
-          echo "resources=$resources" >> $GITHUB_OUTPUT
+          # Ensure the resources directory exists
+          if [ ! -d "resources" ]; then
+            echo "No resources directory found, setting empty list"
+            echo "resources=[]" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # List directories in resources/ and convert to JSON array
+          resources=$(ls -d resources/*/ 2>/dev/null | xargs -n 1 basename | jq -R . | jq -s .)
+          if [ -z "$resources" ]; then
+            echo "No resources found, setting empty list"
+            echo "resources=[]" >> $GITHUB_OUTPUT
+          else
+            # Properly escape and write JSON to GITHUB_OUTPUT
+            echo "resources=$resources" >> $GITHUB_OUTPUT
+            # Debug: Print the output for verification
+            echo "Resources found: $resources"
+          fi
 
   process-resources:
     needs: discover-resources
     runs-on: ubuntu-latest
-    strategy:
-      # Usamos fail-fast: false para que un fallo en un job no detenga los demás
-      fail-fast: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Process resource
+      - name: Process resources
         run: |
-          # Obtener la lista de recursos desde el output del job anterior
+          # Get the resources JSON array
           resources='${{ needs.discover-resources.outputs.resources }}'
-          # Convertir el JSON en una lista y procesar cada recurso
+          echo "Received resources: $resources"
+          
+          # Check if resources is empty
+          if [ "$resources" = "[]" ]; then
+            echo "No resources to process"
+            exit 0
+          fi
+          
+          # Iterate over resources using jq to parse JSON
           for resource in $(echo "$resources" | jq -r '.[]'); do
-            echo "Processing $resource"
-            # Aquí puedes añadir la lógica específica para cada recurso
-            # Por ejemplo, ejecutar un script en la carpeta resources/$resource
-            cd resources/$resource
-            # Ejemplo: ejecutar un script (ajusta según tus necesidades)
-            echo "Running task in $resource"
-            # bash ./script.sh
-            cd ../..
+            echo "Processing resource: $resource"
+            # Add your resource-specific logic here
+            if [ -d "resources/$resource" ]; then
+              cd resources/$resource
+              echo "Running task in $resource"
+              # Example: Replace with your actual task (e.g., run a script)
+              # bash ./script.sh
+              cd ../..
+            else
+              echo "Warning: Directory resources/$resource not found"
+            fi
           done
