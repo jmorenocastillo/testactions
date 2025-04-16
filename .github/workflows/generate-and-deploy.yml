@@ -36,7 +36,7 @@ jobs:
         id: set-resources
         run: |
           # Lista las carpetas en el directorio raíz, excluyendo .git y otros ocultos
-          resources=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s .)
+          resources=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \; | jq -R . | jq -s -c .)
           if [ "$resources" = "[]" ]; then
             echo "Error: No resources found"
             exit 1
@@ -49,6 +49,7 @@ jobs:
               exit 1
             fi
           fi
+          # Escribir la salida en una sola línea
           echo "resources=$resources" >> $GITHUB_OUTPUT
         shell: bash
 
