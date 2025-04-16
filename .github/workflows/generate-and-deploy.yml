@@ -1,4 +1,4 @@
-name: Dynamic Resource Workflow
+name: Dynamic Workflow Controller
 
 on:
   workflow_dispatch:
@@ -6,71 +6,47 @@ on:
       resource:
         description: 'Recurso a procesar (e.g., recurso1)'
         required: true
-        type: string
 
 jobs:
-  discover-resources:
+  generate-yaml:
     runs-on: ubuntu-latest
     outputs:
-      resources: ${{ steps.set-resources.outputs.resources }}
+      yaml_content: ${{ steps.generate.outputs.yaml_content }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: List resource folders
-        id: set-resources
+      - name: Generate dynamic YAML
+        id: generate
         run: |
-          resources="[]"
-          if [ -d "resources" ]; then
-            resources=$(find resources -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s -c .)
-          fi
-          echo "resources=$resources" >> $GITHUB_OUTPUT
-          echo "Available resources: $(echo "$resources" | jq -c .)"
-      - name: Debug resources
-        run: |
-          echo "Raw resources output: $resources"
-          echo "GITHUB_OUTPUT contents:"
-          cat $GITHUB_OUTPUT
+          # Genera un YAML basado en el input
+          YAML_CONTENT=$(cat <<EOF
+          jobs:
+            process-${{ github.event.inputs.resource }}:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Process resource
+                  run: echo "Processing ${{ github.event.inputs.resource }}"
+                - name: Run custom logic
+                  run: cd resources/${{ github.event.inputs.resource }} && bash ./deploy.sh
+          EOF
+          )
+          # Escapa el contenido para que sea seguro como output
+          echo "yaml_content<<EOF" >> $GITHUB_OUTPUT
+          echo "$YAML_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-  validate-input:
-    needs: discover-resources
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate selected resource
-        run: |
-          resources_list='${{ needs.discover-resources.outputs.resources }}'
-          input_resource='${{ github.event.inputs.resource }}'
-          if ! echo "$resources_list" | jq -e --arg res "$input_resource" '. | index($res)' > /dev/null; then
-            echo "Error: Resource '$input_resource' not found in available resources: $resources_list"
-            exit 1
-          fi
-
-  process-resource:
-    needs: [discover-resources, validate-input]
+  execute-dynamic:
+    needs: generate-yaml
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Check directory
+      - name: Execute dynamic logic
+        env:
+          YAML_CONTENT: ${{ needs.generate-yaml.outputs.yaml_content }}
         run: |
-          resource='${{ github.event.inputs.resource }}'
-          if [ -d "resources/$resource" ]; then
-            echo "Directory exists: resources/$resource"
-            ls -l resources/$resource
-          else
-            echo "Error: Directory resources/$resource not found"
-            exit 1
-          fi
-      - name: Check deploy.sh
-        run: |
-          resource='${{ github.event.inputs.resource }}'
-          if [ -f "resources/$resource/deploy.sh" ]; then
-            echo "deploy.sh found"
-            cat resources/$resource/deploy.sh
-          else
-            echo "Error: deploy.sh not found in resources/$resource"
-            exit 1
-          fi
-      - name: Set execute permissions
-        run: chmod +x resources/${{ github.event.inputs.resource }}/deploy.sh
-      - name: Run deploy.sh with debug
-        run: bash -x resources/${{ github.event.inputs.resource }}/deploy.sh
+          # Aquí podrías parsear el YAML con una herramienta como yq
+          echo "$YAML_CONTENT" > dynamic.yml
+          # Extraer lógica específica, por ejemplo, ejecutar comandos
+          RESOURCE='${{ github.event.inputs.resource }}'
+          cd resources/$RESOURCE && bash ./deploy.sh
