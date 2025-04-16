@@ -20,13 +20,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: List resource directories
         id: set-resources
-        run: |
-          # Lista las carpetas en el directorio raíz (ajusta la ruta si es necesario)
-          RESOURCES=$(find . -maxdepth 1 -type d -not -path '.' -not -path './.*' -exec basename {} \;)
-          echo "Resources found: $RESOURCES"
-
-   
-          echo "resources=$RESOURCES" >> $GITHUB_OUTPUT
+        run: |  
+          # Usa find para listar carpetas
+          if find . -maxdepth 1 -type d -name 'recurso*' | grep -q .; then
+            resources=$(find . -maxdepth 1 -type d -name 'recurso*' | sed 's|./||' | jq -R . | jq -s .)
+          else
+            resources="[]"
+          fi
+          echo "Found resources: $resources"
+          echo "resources=$resources" >> $GITHUB_OUTPUT
 
   build-resources:
     needs: discover-resources
