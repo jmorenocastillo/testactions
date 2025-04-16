@@ -1,4 +1,4 @@
-name: Parse Dynamic YAML
+name: Dynamic Resource Workflow
 
 on:
   workflow_dispatch:
@@ -6,30 +6,32 @@ on:
       resource:
         description: 'Recurso a procesar (e.g., recurso1)'
         required: true
+        type: string
 
 jobs:
-  generate-and-run:
+  discover-resources:
     runs-on: ubuntu-latest
+    outputs:
+      resources: ${{ steps.set-resources.outputs.resources }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install yq
+      - name: List resource folders
+        id: set-resources
         run: |
-          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
-      - name: Generate and parse YAML
+          resources="[]"
+          if [ -d "resources" ]; then
+            resources=$(find resources -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s .)
+          fi
+          echo "resources=$resources" >> $GITHUB_OUTPUT
+          echo "Available resources: $resources"
+
+  validate-input:
+    needs: discover-resources
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate selected resource
         run: |
-          # Generar YAML
-          cat <<EOF > dynamic.yml
-          jobs:
-            process-${{ github.event.inputs.resource }}:
-              steps:
-                - run: echo "Processing ${{ github.event.inputs.resource }}"
-                - run: cd resources/${{ github.event.inputs.resource }} && bash ./deploy.sh
-          EOF
-          # Parsear y ejecutar comandos
-          COMMANDS=$(yq e '.jobs.*.steps[].run' dynamic.yml)
-          while IFS= read -r cmd; do
-            echo "Ejecutando: $cmd"
-            eval "$cmd"
-          done <<< "$COMMANDS"
+          resources_list='${{ needs.discover-resources.outputs.resources }}'
+          input_resource='${{ github.event.inputs.resource }}'
+          if ! echo "$resources_list" | jq -e --arg res
