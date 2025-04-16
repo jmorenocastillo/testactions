@@ -1,0 +1,32 @@
+name: Dynamic Resource Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: 'Recurso a procesar (e.g., recurso1)'
+        required: true
+
+jobs:
+  validate-resource:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Validate resource
+        run: |
+          if [ ! -d "resources/${{ github.event.inputs.resource }}" ]; then
+            echo "Error: Resource '${{ github.event.inputs.resource }}' not found"
+            exit 1
+          fi
+
+  process-resource:
+    needs: validate-resource
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run dynamic action
+        uses: ./.github/actions/dynamic-action
+        with:
+          resource: ${{ github.event.inputs.resource }}
