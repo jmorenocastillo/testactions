@@ -70,6 +70,7 @@ jobs:
   deploy-resources:
     needs: discover-resources
     runs-on: ubuntu-latest
+    name: Deploy ${{ matrix.resource }}
     strategy:
       matrix:
         resource: ${{ fromJson(needs.discover-resources.outputs.selected_resources) }}
@@ -77,8 +78,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
 
       - name: Run Terraform for resource
         run: |
           echo "Ejecutando Terraform para ${{ matrix.resource }}"
+          cd ${{ matrix.resource }}
+          terraform init -backend-config="storage_account_name=$AZURE_STORAGE_ACCOUNT" \
+                         -backend-config="container_name=$CONTAINER_NAME" \
+                         -backend-config="key=${{ matrix.resource }}.tfstate" \
+                         -backend-config="access_key=$AZURE_STORAGE_KEY"
+          terraform plan
+          terraform apply -auto-approve
